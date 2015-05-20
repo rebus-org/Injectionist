@@ -35,3 +35,20 @@ When the time comes to actually create an instance of something, just `Get` it:
     var instance = injectionist.Get<HomeController>();
 
 It's pretty simple, but it's still kind of neat.
+
+### Is there more?
+
+Not really. Oh, one thing though - the resolution context tracks all instances that it has resolved, allowing you to do stuff like this:
+
+    injectionist.Register(c => {
+        var thing = new MyThing();
+
+        thing.Disposed += () => {
+             foreach(var disposable in c.GetTrackedInstancesOf<IDisposable>()) {
+                  disposable.Dispose();
+             }
+        };
+    });
+
+That is, you can keep the resolution context around (probably by referencing it from an even, just like the code snippet above), and then
+use it to go through e.g. all resolves instances that implement `IDisposable`.
