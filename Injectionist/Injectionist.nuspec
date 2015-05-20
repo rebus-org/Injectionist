@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Injectionist</id>
+    <version>1.0.0</version>
+    <title>Injectionist</title>
+    <authors>mookid8000</authors>
+    <owners>mookid8000</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://mookid.dk/oncode/rebus</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>lean mean decorating injection machine</description>
+    <copyright>Copyright 2015</copyright>
+    <tags>di ioc injection</tags>
+    <iconUrl>https://github.com/mookid8000/Rebus/raw/master/artwork/logo200x200-transparent.png</iconUrl>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Injectionist.dll" target="lib\NET45" />
+    <file src="bin\Release\Injectionist.xml" target="lib\NET45" />
+  </files>
+</package>
