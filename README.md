@@ -50,5 +50,5 @@ Not really. Oh, one thing though - the resolution context tracks all instances t
         };
     });
 
-That is, you can keep the resolution context around (probably by referencing it from an even, just like the code snippet above), and then
+That is, you can keep the resolution context around (probably by referencing it from an event, just like the code snippet above), and then
 use it to go through e.g. all resolves instances that implement `IDisposable`.
