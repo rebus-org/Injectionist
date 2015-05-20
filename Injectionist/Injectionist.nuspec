@@ -12,7 +12,7 @@
     <description>lean mean decorating injection machine</description>
     <copyright>Copyright 2015</copyright>
     <tags>di ioc injection</tags>
-    <iconUrl></iconUrl>
+    <!--<iconUrl></iconUrl>-->
     <dependencies>
     </dependencies>
   </metadata>
