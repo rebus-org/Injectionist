@@ -9,3 +9,4 @@ if not exist deploy (
 )
 
 tools\nuget\nuget pack Injectionist\Injectionist.nuspec -OutputDirectory deploy
+tools\nuget\nuget push deploy\*.nupkg
