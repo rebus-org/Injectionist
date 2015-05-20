@@ -14,7 +14,7 @@ namespace Injectionist
         readonly Dictionary<Type, List<Resolver>> _resolvers = new Dictionary<Type, List<Resolver>>();
 
         /// <summary>
-        /// Starts a new resolution context, resolving an instance of the given <see cref="TService"/>
+        /// Starts a new resolution context, resolving an instance of the given <typeparamref name="TService"/>
         /// </summary>
         public TService Get<TService>()
         {
@@ -22,9 +22,9 @@ namespace Injectionist
         }
 
         /// <summary>
-        /// Registers a factory method that can provide an instance of <see cref="TService"/>. If <see cref="isDecorator"/> is set to true,
-        /// the factory method will be called before the factory method where <see cref="isDecorator"/> is set to false (which is the default).
-        /// There can be only one factory method with <see cref="isDecorator"/>=false for each type of <see cref="TService"/>.
+        /// Registers a factory method that can provide an instance of <typeparamref name="TService"/>. If <paramref name="isDecorator"/> is set to true,
+        /// the factory method will be called before the factory method where <paramref name="isDecorator"/> is set to false (which is the default).
+        /// There can be only one factory method with <paramref name="isDecorator"/>=false for each type of <typeparamref name="TService"/>.
         /// </summary>
         public void Register<TService>(Func<IResolutionContext, TService> resolverMethod, bool isDecorator = false)
         {
@@ -60,7 +60,7 @@ namespace Injectionist
         }
 
         /// <summary>
-        /// Returns whether there exists a registration for the specified <see cref="TService"/>.
+        /// Returns whether there exists a registration for the specified <typeparamref name="TService"/>.
         /// </summary>
         public bool Has<TService>(bool primary = true)
         {
