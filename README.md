@@ -17,7 +17,7 @@ Then, register a type-to-func mapping in it:
 
     injectionist.Register<ISomething>(c => new ImplementationOfSomething());
 
-where `ImplementationOfSomething` is obsiously an implementation of `ISomething`.
+where `ImplementationOfSomething`, obviously, is an implementation of `ISomething`.
 
 If a class has one or more dependencies and needs to have stuff injected, get that stuff from the `IResolutionContext` passed to the func:
 
