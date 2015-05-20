@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectionist", "Injectionist\Injectionist.csproj", "{E932E1E7-A35D-4E3F-9946-D17E61DE608A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectionist.Tests", "Injectionist.Tests\Injectionist.Tests.csproj", "{50943E6A-6E55-4BB7-951D-82AF6EEA4FA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E932E1E7-A35D-4E3F-9946-D17E61DE608A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E932E1E7-A35D-4E3F-9946-D17E61DE608A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E932E1E7-A35D-4E3F-9946-D17E61DE608A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E932E1E7-A35D-4E3F-9946-D17E61DE608A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50943E6A-6E55-4BB7-951D-82AF6EEA4FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50943E6A-6E55-4BB7-951D-82AF6EEA4FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50943E6A-6E55-4BB7-951D-82AF6EEA4FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50943E6A-6E55-4BB7-951D-82AF6EEA4FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
