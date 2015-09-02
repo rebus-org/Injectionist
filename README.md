@@ -34,21 +34,11 @@ When the time comes to actually create an instance of something, just `Get` it:
 
     var instance = injectionist.Get<HomeController>();
 
+which will give you a `ResolutionResult<HomeController>` whose `Instance` property will give you the `HomeController` instance
+you asked for, and the `TrackedInstances` property will be an `IEnumerable` of all the objects that were built in order to build
+the object you asked for.
+
+This way, you can do whatever is necessary to properly dispose disposables that may have been built in order to satisfy some remote
+transitive dependency of `HomeController`.
+
 It's pretty simple, but it's still kind of neat.
-
-### Is there more?
-
-Not really. Oh, one thing though - the resolution context tracks all instances that it has resolved, allowing you to do stuff like this:
-
-    injectionist.Register(c => {
-        var thing = new MyThing();
-
-        thing.Disposed += () => {
-             foreach(var disposable in c.GetTrackedInstancesOf<IDisposable>()) {
-                  disposable.Dispose();
-             }
-        };
-    });
-
-That is, you can keep the resolution context around (probably by referencing it from an event, just like the code snippet above), and then
-use it to go through e.g. all resolves instances that implement `IDisposable`.
