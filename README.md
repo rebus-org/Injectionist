@@ -36,11 +36,15 @@ closer to the primary implementation for each nested call to `c.Get<ISomething>(
 
 When the time comes to actually create an instance of something, just `Get` it:
 
-    var instance = injectionist.Get<HomeController>();
+    var result = injectionist.Get<HomeController>();
 
 which will give you a `ResolutionResult<HomeController>` whose `Instance` property will give you the `HomeController` instance
 you asked for, and the `TrackedInstances` property will be an `IEnumerable` of all the objects that were built in order to build
 the object you asked for.
+
+    var instance = result.Instance; //< this is the HomeController
+
+    var disposables = result.TrackedInstances.OfType<IDisposable>();
 
 This way, you can do whatever is necessary to properly dispose disposables that may have been built in order to satisfy some remote
 transitive dependency of `HomeController`.
