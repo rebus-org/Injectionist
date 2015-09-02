@@ -19,7 +19,7 @@ namespace Injectionist.Tests
             _injectionist.Register<ISomeDependency>(c => new SomeDependency());
             _injectionist.Register<ISomeService>(c => new SomeImplementation(c.Get<ISomeDependency>()));
 
-            var instance = _injectionist.Get<ISomeService>();
+            var instance = _injectionist.Get<ISomeService>().Instance;
 
             Assert.That(instance, Is.TypeOf<SomeImplementation>());
             Assert.That(((SomeImplementation)instance).SomeDependency, Is.TypeOf<SomeDependency>());

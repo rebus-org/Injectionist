@@ -28,9 +28,11 @@ namespace Injectionist
         /// <summary>
         /// Starts a new resolution context, resolving an instance of the given <typeparamref name="TService"/>
         /// </summary>
-        public TService Get<TService>()
+        public ResolutionResult<TService> Get<TService>()
         {
-            return new ResolutionContext(_resolvers).Get<TService>();
+            var resolutionContext = new ResolutionContext(_resolvers);
+            var instance = resolutionContext.Get<TService>();
+            return new ResolutionResult<TService>(instance, resolutionContext.GetTrackedInstancesOf<object>());
         }
 
         /// <summary>
@@ -49,6 +51,24 @@ namespace Injectionist
         public void Decorate<TService>(Func<IResolutionContext, TService> resolverMethod)
         {
             Register(resolverMethod, isDecorator: true);
+        }
+
+        /// <summary>
+        /// Returns whether there exists a registration for the specified <typeparamref name="TService"/>.
+        /// </summary>
+        public bool Has<TService>(bool primary = true)
+        {
+            var key = typeof(TService);
+            
+            if (!_resolvers.ContainsKey(key) ) return false;
+
+            var handler = _resolvers[key];
+
+            if (handler.PrimaryResolver != null) return true;
+
+            if (!primary && handler.Decorators.Any()) return true;
+
+            return false;
         }
 
         void Register<TService>(Func<IResolutionContext, TService> resolverMethod, bool isDecorator)
@@ -80,24 +100,6 @@ namespace Injectionist
             {
                 handler.Decorators.Insert(0, resolver);
             }
-        }
-
-        /// <summary>
-        /// Returns whether there exists a registration for the specified <typeparamref name="TService"/>.
-        /// </summary>
-        public bool Has<TService>(bool primary = true)
-        {
-            var key = typeof(TService);
-            
-            if (!_resolvers.ContainsKey(key) ) return false;
-
-            var handler = _resolvers[key];
-
-            if (handler.PrimaryResolver != null) return true;
-
-            if (!primary && handler.Decorators.Any()) return true;
-
-            return false;
         }
 
         abstract class Resolver

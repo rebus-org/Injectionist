@@ -19,7 +19,7 @@ namespace Injectionist.Tests
             _injectionist.Register(c => new SomeDependency());
             _injectionist.Register(c => new SomeClass(c.Get<SomeDependency>()));
 
-            var instance = _injectionist.Get<SomeClass>();
+            var instance = _injectionist.Get<SomeClass>().Instance;
 
             Assert.That(instance, Is.TypeOf<SomeClass>());
             Assert.That(instance.Dependency, Is.TypeOf<SomeDependency>());
@@ -53,7 +53,7 @@ namespace Injectionist.Tests
             _injectionist.Register(c => new OtherDependency());
             _injectionist.Register(c => new SomeClass(c.Get<SomeDependency>()));
 
-            var instance = _injectionist.Get<SomeClassWithMultipleDependencies>();
+            var instance = _injectionist.Get<SomeClassWithMultipleDependencies>().Instance;
 
             Assert.That(instance, Is.TypeOf<SomeClassWithMultipleDependencies>());
             Assert.That(instance.FirstDependency, Is.TypeOf<SomeClass>());

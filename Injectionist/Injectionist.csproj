@@ -45,6 +45,7 @@
     <Compile Include="IResolutionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolutionException.cs" />
+    <Compile Include="ResolutionResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Injectionist.nuspec" />

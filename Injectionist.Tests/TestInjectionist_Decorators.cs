@@ -19,7 +19,7 @@ namespace Injectionist.Tests
             _injectionist.Register<ISomething>(c => new ActualSomething());
             _injectionist.Decorate<ISomething>(c => new Decorator(c.Get<ISomething>(), "4"));
 
-            var instance = _injectionist.Get<ISomething>();
+            var instance = _injectionist.Get<ISomething>().Instance;
 
             Assert.That(instance, Is.TypeOf<Decorator>());
             Assert.That(((Decorator)instance).InnerSomething, Is.TypeOf<ActualSomething>());
@@ -31,7 +31,7 @@ namespace Injectionist.Tests
             _injectionist.Decorate<ISomething>(c => new Decorator(c.Get<ISomething>(), "4"));
             _injectionist.Register<ISomething>(c => new ActualSomething());
 
-            var instance = _injectionist.Get<ISomething>();
+            var instance = _injectionist.Get<ISomething>().Instance;
 
             Assert.That(instance, Is.TypeOf<Decorator>());
             Assert.That(((Decorator)instance).InnerSomething, Is.TypeOf<ActualSomething>());

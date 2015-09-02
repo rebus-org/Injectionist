@@ -21,7 +21,7 @@ namespace Injectionist.Tests
             _injectionist.Register(c => new ClassWithDependencies(c.Get<Dependency>(), c.Get<Dependency>()));
             _injectionist.Register(c => new Dependency());
 
-            var classWithDependencies = _injectionist.Get<ClassWithDependencies>();
+            var classWithDependencies = _injectionist.Get<ClassWithDependencies>().Instance;
 
             Assert.That(classWithDependencies.Dependency1.Id, Is.EqualTo(classWithDependencies.Dependency2.Id));
         }
@@ -84,7 +84,7 @@ namespace Injectionist.Tests
         {
             _injectionist.Register(c => "hej");
 
-            var instance = _injectionist.Get<string>();
+            var instance = _injectionist.Get<string>().Instance;
 
             Assert.That(instance, Is.EqualTo("hej"));
         }
@@ -94,7 +94,7 @@ namespace Injectionist.Tests
         {
             _injectionist.Register(c => new ComplexType());
 
-            var instance = _injectionist.Get<ComplexType>();
+            var instance = _injectionist.Get<ComplexType>().Instance;
 
             Assert.That(instance, Is.TypeOf<ComplexType>());
         }

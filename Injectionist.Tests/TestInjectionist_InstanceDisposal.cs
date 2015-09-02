@@ -37,7 +37,7 @@ namespace Injectionist.Tests
             injectionist.Register(c => new Disposable2(c.Get<EventTracker>()));
             injectionist.Register(c => eventTracker);
 
-            using (var bus = injectionist.Get<FakeBus>())
+            using (var bus = injectionist.Get<FakeBus>().Instance)
             {
                 Console.WriteLine("Using the bus....");
 
