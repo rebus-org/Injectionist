@@ -25,7 +25,11 @@ If a class has one or more dependencies and needs to have stuff injected, get th
 
 Now, let's pretend that I want to decorate `ImplementationOfSomething` with another implementation of `ISomething` - do this:
 
-    injectioninst.Decorate<ISomething>(c => new SomethingDecorator(c.Get<ISomething>()));
+    injectioninst.Decorate<ISomething>(c => {
+        var something = c.Get<ISomething>();
+
+        return new SomethingDecorator(something);
+    });
 
 The Injectionist will always resolve decorators first, in the order that they're registered in, recursively moving
 closer to the primary implementation for each nested call to `c.Get<ISomething>()`.
