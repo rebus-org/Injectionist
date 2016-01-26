@@ -47,6 +47,7 @@
     <Compile Include="TestInjectionist_Decorators.cs" />
     <Compile Include="TestInjectionist_Dependencies.cs" />
     <Compile Include="TestInjectionist_InstanceDisposal.cs" />
+    <Compile Include="TestInjectionist_InstanceQueries.cs" />
     <Compile Include="TestInjectionist_ServiceAndImplementation.cs" />
   </ItemGroup>
   <ItemGroup>

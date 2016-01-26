@@ -145,8 +145,8 @@ namespace Injectionist
         {
             readonly Dictionary<Type, int> _decoratorDepth = new Dictionary<Type, int>();
             readonly Dictionary<Type, Handler> _resolvers;
-            readonly Dictionary<Type, Tuple<object, int>> _instances = new Dictionary<Type, Tuple<object, int>>();
-            int _resolutionOrderCounter;
+            readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
+            readonly List<object> _resolvedInstances = new List<object>();
 
             public ResolutionContext(Dictionary<Type, Handler> resolvers)
             {
@@ -159,7 +159,7 @@ namespace Injectionist
 
                 if (_instances.ContainsKey(serviceType))
                 {
-                    return (TService)_instances[serviceType].Item1;
+                    return (TService)_instances[serviceType];
                 }
 
                 if (!_resolvers.ContainsKey(serviceType))
@@ -186,7 +186,8 @@ namespace Injectionist
 
                     var instance = resolver.InvokeResolver(this);
 
-                    _instances[serviceType] = new Tuple<object, int>(instance, _resolutionOrderCounter++);
+                    _instances[serviceType] = instance;
+                    _resolvedInstances.Add(instance);
 
                     return instance;
                 }
@@ -203,11 +204,7 @@ namespace Injectionist
 
             public IEnumerable<T> GetTrackedInstancesOf<T>()
             {
-                return _instances.Values
-                    .OrderBy(t => t.Item2)  //< order instances by when they were created
-                    .Select(t => t.Item1)
-                    .OfType<T>()
-                    .ToList();
+                return _resolvedInstances.OfType<T>().ToList();
             }
         }
     }
