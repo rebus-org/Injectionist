@@ -58,9 +58,9 @@ namespace Injectionist.Tests
         [Test]
         public void CannotRegisterTwoPrimaryImplementations()
         {
-            _injectionist.Register(c => DateTime.Now);
+            _injectionist.Register(c => DateTime.Now, "Registered a now-factory, just because");
 
-            var ex = Assert.Throws<InvalidOperationException>(() => _injectionist.Register(c => DateTime.Now));
+            var ex = Assert.Throws<InvalidOperationException>(() => _injectionist.Register(c => DateTime.Now, "did it again"));
 
             Console.WriteLine("Got expected exception: {0}", ex);
         }

@@ -48,21 +48,24 @@ namespace Injection
         }
 
         /// <summary>
-        /// Registers a factory method that can provide an instance of <typeparamref name="TService"/>
+        /// Registers a factory method that can provide an instance of <typeparamref name="TService"/>. Optionally,
+        /// the supplied <paramref name="description"/> will be used to report more comprehensible errors in case of
+        /// conflicting registrations.
         /// </summary>
-        public void Register<TService>(Func<IResolutionContext, TService> resolverMethod)
+        public void Register<TService>(Func<IResolutionContext, TService> resolverMethod, string description = null)
         {
-            Register(resolverMethod, isDecorator: false);
+            Register(resolverMethod, description: description,  isDecorator: false);
         }
 
         /// <summary>
         /// Registers a decorator factory method that can provide an instance of <typeparamref name="TService"/> 
         /// (i.e. the resolver is expected to call <see cref="IResolutionContext.Get{TService}"/> where TService
-        /// is <typeparamref name="TService"/>
+        /// is <typeparamref name="TService"/>. Optionally, the supplied <paramref name="description"/> will be used 
+        /// to report more comprehensible errors in case of conflicting registrations.
         /// </summary>
-        public void Decorate<TService>(Func<IResolutionContext, TService> resolverMethod)
+        public void Decorate<TService>(Func<IResolutionContext, TService> resolverMethod, string description = null)
         {
-            Register(resolverMethod, isDecorator: true);
+            Register(resolverMethod, description: description, isDecorator: true);
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace Injection
             return false;
         }
 
-        void Register<TService>(Func<IResolutionContext, TService> resolverMethod, bool isDecorator)
+        void Register<TService>(Func<IResolutionContext, TService> resolverMethod, bool isDecorator, string description)
         {
             var key = typeof(TService);
             if (!_resolvers.ContainsKey(key))
@@ -93,16 +96,16 @@ namespace Injection
 
             var handler = _resolvers[key];
 
+            var resolver = new Resolver<TService>(resolverMethod, description: description, isDecorator: isDecorator);
+
             if (!isDecorator)
             {
                 if (handler.PrimaryResolver != null)
                 {
-                    throw new InvalidOperationException(string.Format("Attempted to register {0} as primary implementation of {1}, but a primary registration already exists: {2}",
-                        resolverMethod, typeof(TService), handler.PrimaryResolver));
+                    throw new InvalidOperationException(string.Format("Attempted to register {0}, but a primary registration already exists: {1}",
+                        resolver, handler.PrimaryResolver));
                 }
             }
-
-            var resolver = new Resolver<TService>(resolverMethod, isDecorator: isDecorator);
 
             if (!resolver.IsDecorator)
             {
@@ -132,11 +135,13 @@ namespace Injection
         class Resolver<TService> : Resolver
         {
             readonly Func<IResolutionContext, TService> _resolver;
+            readonly string _description;
 
-            public Resolver(Func<IResolutionContext, TService> resolver, bool isDecorator)
+            public Resolver(Func<IResolutionContext, TService> resolver, bool isDecorator, string description)
                 : base(isDecorator)
             {
                 _resolver = resolver;
+                _description = description;
             }
 
             public TService InvokeResolver(IResolutionContext context)
@@ -146,10 +151,9 @@ namespace Injection
 
             public override string ToString()
             {
-                return string.Format("{0} ({1} {2})",
-                    _resolver,
-                    IsDecorator ? "decorator ->" : "primary ->",
-                    typeof(TService));
+                return !string.IsNullOrWhiteSpace(_description)
+                    ? string.Format("{0} {1} ({2})", IsDecorator ? "decorator ->" : "primary ->", typeof (TService), _description)
+                    : string.Format("{0} {1}", IsDecorator ? "decorator ->" : "primary ->", typeof (TService));
             }
         }
 
