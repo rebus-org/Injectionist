@@ -11,7 +11,7 @@ namespace Injectionist.Tests
         [Test]
         public void InjectedWhateverWithWhateverInsideIsProperlyDisposed()
         {
-            var injectionist = new Injectionist();
+            var injectionist = new Injection.Injectionist();
             var eventTracker = new EventTracker();
 
             injectionist.Register(c =>
@@ -20,13 +20,13 @@ namespace Injectionist.Tests
 
                 fakeBus.FakeBusDisposed += () =>
                 {
-                    foreach (var disposable in c.GetTrackedInstancesOf<IDisposable>().Reverse())
+                    foreach (var disposable in c.TrackedInstances.OfType<IDisposable>().Reverse())
                     {
                         disposable.Dispose();
                     }
                 };
 
-                foreach (var disposable in c.GetTrackedInstancesOf<IInitializable>())
+                foreach (var disposable in c.TrackedInstances.OfType<IInitializable>())
                 {
                     disposable.Initialize();
                 }

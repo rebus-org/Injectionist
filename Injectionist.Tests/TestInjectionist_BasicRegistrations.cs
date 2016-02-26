@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Injection;
 using NUnit.Framework;
 
 namespace Injectionist.Tests
@@ -7,12 +8,12 @@ namespace Injectionist.Tests
     [TestFixture]
     public class TestInjectionist_BasicRegistrations
     {
-        Injectionist _injectionist;
+        Injection.Injectionist _injectionist;
 
         [SetUp]
         public void SetUp()
         {
-            _injectionist = new Injectionist();
+            _injectionist = new Injection.Injectionist();
         }
 
         [Test]

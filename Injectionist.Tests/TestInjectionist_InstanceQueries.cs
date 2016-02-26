@@ -10,7 +10,7 @@ namespace Injectionist.Tests
         [Test]
         public void CanGetResolvedInstancesOfSomeParticularType()
         {
-            var injectionist = new Injectionist();
+            var injectionist = new Injection.Injectionist();
 
             injectionist.Decorate<IService>(c => new Decorator("2", c.Get<IService>()));
             injectionist.Decorate<IService>(c => new Decorator("3", c.Get<IService>()));

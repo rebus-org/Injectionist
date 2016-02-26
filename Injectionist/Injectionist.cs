@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
-namespace Injectionist
+namespace Injection
 {
     /// <summary>
     /// Dependency injectionist that can be used for configuring a system of injected service implementations, possibly with decorators,
@@ -18,9 +20,19 @@ namespace Injectionist
                 Decorators = new List<Resolver>();
             }
 
-            public Resolver PrimaryResolver { get; set; }
+            public Resolver PrimaryResolver { get; private set; }
 
             public List<Resolver> Decorators { get; private set; }
+
+            public void AddDecorator(Resolver resolver)
+            {
+                Decorators.Insert(0, resolver);
+            }
+
+            public void AddPrimary(Resolver resolver)
+            {
+                PrimaryResolver = resolver;
+            }
         }
 
         readonly Dictionary<Type, Handler> _resolvers = new Dictionary<Type, Handler>();
@@ -32,7 +44,7 @@ namespace Injectionist
         {
             var resolutionContext = new ResolutionContext(_resolvers);
             var instance = resolutionContext.Get<TService>();
-            return new ResolutionResult<TService>(instance, resolutionContext.GetTrackedInstancesOf<object>());
+            return new ResolutionResult<TService>(instance, resolutionContext.TrackedInstances);
         }
 
         /// <summary>
@@ -94,11 +106,11 @@ namespace Injectionist
 
             if (!resolver.IsDecorator)
             {
-                handler.PrimaryResolver = resolver;
+                handler.AddPrimary(resolver);
             }
             else
             {
-                handler.Decorators.Insert(0, resolver);
+                handler.AddDecorator(resolver);
             }
         }
 
@@ -187,7 +199,11 @@ namespace Injectionist
                     var instance = resolver.InvokeResolver(this);
 
                     _instances[serviceType] = instance;
-                    _resolvedInstances.Add(instance);
+
+                    if (!_resolvedInstances.Contains(instance))
+                    {
+                        _resolvedInstances.Add(instance);
+                    }
 
                     return instance;
                 }
@@ -202,10 +218,81 @@ namespace Injectionist
                 }
             }
 
-            public IEnumerable<T> GetTrackedInstancesOf<T>()
+            public IEnumerable TrackedInstances
             {
-                return _resolvedInstances.OfType<T>().ToList();
+                get { return _resolvedInstances.ToList(); }
             }
         }
+    }
+
+    /// <summary>
+    /// Represents the context of resolving one root service and can be used throughout the tree to fetch something to be injected
+    /// </summary>
+    public interface IResolutionContext
+    {
+        /// <summary>
+        /// Gets an instance of the specified <typeparamref name="TService"/>.
+        /// </summary>
+        TService Get<TService>();
+
+        /// <summary>
+        /// Gets all instances resolved within this resolution context at this time.
+        /// </summary>
+        IEnumerable TrackedInstances { get; }
+    }
+
+    /// <summary>
+    /// Exceptions that is thrown when something goes wrong while working with the injectionist
+    /// </summary>
+    [Serializable]
+    public class ResolutionException : Exception
+    {
+        /// <summary>
+        /// Constructs the exception
+        /// </summary>
+        public ResolutionException(string message, params object[] objs)
+            : base(string.Format(message, objs))
+        {
+        }
+
+        /// <summary>
+        /// Constructs the exception
+        /// </summary>
+        public ResolutionException(Exception innerException, string message, params object[] objs)
+            : base(string.Format(message, objs), innerException)
+        {
+        }
+
+        /// <summary>
+        /// Constructs the exception
+        /// </summary>
+        public ResolutionException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Contains a built object instance along with all the objects that were used to build the instance
+    /// </summary>
+    public class ResolutionResult<TService>
+    {
+        internal ResolutionResult(TService instance, IEnumerable trackedInstances)
+        {
+            if (instance == null) throw new ArgumentNullException("instance");
+            if (trackedInstances == null) throw new ArgumentNullException("trackedInstances");
+            Instance = instance;
+            TrackedInstances = trackedInstances;
+        }
+
+        /// <summary>
+        /// Gets the instance that was built
+        /// </summary>
+        public TService Instance { get; private set; }
+
+        /// <summary>
+        /// Gets all object instances that were used to build <see cref="Instance"/>, including the instance itself
+        /// </summary>
+        public IEnumerable TrackedInstances { get; private set; }
     }
 }

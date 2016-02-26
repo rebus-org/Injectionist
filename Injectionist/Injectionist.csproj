@@ -7,7 +7,7 @@
     <ProjectGuid>{E932E1E7-A35D-4E3F-9946-D17E61DE608A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Injectionist</RootNamespace>
+    <RootNamespace>Injection</RootNamespace>
     <AssemblyName>Injectionist</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,10 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Injectionist.cs" />
-    <Compile Include="IResolutionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResolutionException.cs" />
-    <Compile Include="ResolutionResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Injectionist.nuspec">
