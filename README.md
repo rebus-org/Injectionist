@@ -50,3 +50,7 @@ This way, you can do whatever is necessary to properly dispose disposables that 
 transitive dependency of `HomeController`.
 
 It's pretty simple, but it's still kind of neat.
+
+# License
+
+Injectionist is [MIT-licensed](https://raw.githubusercontent.com/rebus-org/Injectionist/master/LICENSE.md)
