@@ -24,12 +24,24 @@ namespace Injection
 
             public List<Resolver> Decorators { get; private set; }
 
-            public void AddDecorator(Resolver resolver)
+            void AddDecorator(Resolver resolver)
             {
                 Decorators.Insert(0, resolver);
             }
 
-            public void AddPrimary(Resolver resolver)
+            public void AddResolver(Resolver resolver)
+            {
+                if (!resolver.IsDecorator)
+                {
+                    AddPrimary(resolver);
+                }
+                else
+                {
+                    AddDecorator(resolver);
+                }
+            }
+
+            void AddPrimary(Resolver resolver)
             {
                 PrimaryResolver = resolver;
             }
@@ -54,7 +66,7 @@ namespace Injection
         /// </summary>
         public void Register<TService>(Func<IResolutionContext, TService> resolverMethod, string description = null)
         {
-            Register(resolverMethod, description: description,  isDecorator: false);
+            Register(resolverMethod, description: description, isDecorator: false);
         }
 
         /// <summary>
@@ -74,8 +86,8 @@ namespace Injection
         public bool Has<TService>(bool primary = true)
         {
             var key = typeof(TService);
-            
-            if (!_resolvers.ContainsKey(key) ) return false;
+
+            if (!_resolvers.ContainsKey(key)) return false;
 
             var handler = _resolvers[key];
 
@@ -88,14 +100,7 @@ namespace Injection
 
         void Register<TService>(Func<IResolutionContext, TService> resolverMethod, bool isDecorator, string description)
         {
-            var key = typeof(TService);
-            if (!_resolvers.ContainsKey(key))
-            {
-                _resolvers.Add(key, new Handler());
-            }
-
-            var handler = _resolvers[key];
-
+            var handler = GetOrCreateHandler<TService>();
             var resolver = new Resolver<TService>(resolverMethod, description: description, isDecorator: isDecorator);
 
             if (!isDecorator)
@@ -107,29 +112,29 @@ namespace Injection
                 }
             }
 
-            if (!resolver.IsDecorator)
-            {
-                handler.AddPrimary(resolver);
-            }
-            else
-            {
-                handler.AddDecorator(resolver);
-            }
+            handler.AddResolver(resolver);
+        }
+
+        Handler GetOrCreateHandler<TService>()
+        {
+            Handler handler;
+
+            if (_resolvers.TryGetValue(typeof(TService), out handler)) return handler;
+
+            handler = new Handler();
+            _resolvers[typeof(TService)] = handler;
+
+            return handler;
         }
 
         abstract class Resolver
         {
-            readonly bool _isDecorator;
-
             protected Resolver(bool isDecorator)
             {
-                _isDecorator = isDecorator;
+                IsDecorator = isDecorator;
             }
 
-            public bool IsDecorator
-            {
-                get { return _isDecorator; }
-            }
+            public bool IsDecorator { get; private set; }
         }
 
         class Resolver<TService> : Resolver
@@ -152,8 +157,8 @@ namespace Injection
             public override string ToString()
             {
                 return !string.IsNullOrWhiteSpace(_description)
-                    ? string.Format("{0} {1} ({2})", IsDecorator ? "decorator ->" : "primary ->", typeof (TService), _description)
-                    : string.Format("{0} {1}", IsDecorator ? "decorator ->" : "primary ->", typeof (TService));
+                    ? string.Format("{0} {1} ({2})", IsDecorator ? "decorator ->" : "primary ->", typeof(TService), _description)
+                    : string.Format("{0} {1}", IsDecorator ? "decorator ->" : "primary ->", typeof(TService));
             }
         }
 
