@@ -54,10 +54,15 @@ namespace Injection
         /// </summary>
         public ResolutionResult<TService> Get<TService>()
         {
-            var resolutionContext = new ResolutionContext(_resolvers);
+            var resolutionContext = new ResolutionContext(_resolvers, ResolveRequested);
             var instance = resolutionContext.Get<TService>();
             return new ResolutionResult<TService>(instance, resolutionContext.TrackedInstances);
         }
+
+        /// <summary>
+        /// Events that is raised when the resolution of a top-level instance is requested
+        /// </summary>
+        public event Action<Type> ResolveRequested = delegate { };
 
         /// <summary>
         /// Registers a factory method that can provide an instance of <typeparamref name="TService"/>. Optionally,
@@ -166,21 +171,25 @@ namespace Injection
         {
             readonly Dictionary<Type, int> _decoratorDepth = new Dictionary<Type, int>();
             readonly Dictionary<Type, Handler> _resolvers;
+            readonly Action<Type> _serviceTypeRequested;
             readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
             readonly List<object> _resolvedInstances = new List<object>();
 
-            public ResolutionContext(Dictionary<Type, Handler> resolvers)
+            public ResolutionContext(Dictionary<Type, Handler> resolvers, Action<Type> serviceTypeRequested)
             {
                 _resolvers = resolvers;
+                _serviceTypeRequested = serviceTypeRequested;
             }
 
             public TService Get<TService>()
             {
                 var serviceType = typeof(TService);
 
-                if (_instances.ContainsKey(serviceType))
+                object existingInstance;
+
+                if (_instances.TryGetValue(serviceType, out existingInstance))
                 {
-                    return (TService)_instances[serviceType];
+                    return (TService)existingInstance;
                 }
 
                 if (!_resolvers.ContainsKey(serviceType))
@@ -191,6 +200,7 @@ namespace Injection
                 if (!_decoratorDepth.ContainsKey(serviceType))
                 {
                     _decoratorDepth[serviceType] = 0;
+                    _serviceTypeRequested(serviceType);
                 }
 
                 var handlerForThisType = _resolvers[serviceType];
