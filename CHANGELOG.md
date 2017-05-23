@@ -9,3 +9,7 @@
 # 3.0.0
 
 * Source-only NuGet package
+
+# 4.0.0-b01
+
+* .NET Core support
