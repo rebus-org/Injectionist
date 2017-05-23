@@ -12,6 +12,6 @@
 
 * Source-only NuGet package
 
-## 4.0.0-b02
+## 4.0.0-b03
 
-* .NET Core support
+* .NET Core support (netstandard1.0)
