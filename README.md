@@ -1,6 +1,6 @@
 # Injectionist
 
-The Injectionist is a dependency injection tool that can be used to e.g. configure something.
+The Injectionist is a dependency injection tool that can be used to configure something.
 
 It came to life when Rebus needed a flexible built-in IoC container-like thing that supported decorators. 
 Rebus uses it to register stuff throughout the `Configure.With(...)` spell, finally calling 
